@@ -1,140 +1,130 @@
-# Hey Parrot 🦜
+# 🦜 Hey Parrot
 
-Voice-controlled Parrot drone built with **Olympe**, **Vosk**, and a local **LLM via Ollama** — featuring robust command parsing, silent-mode voice input, and safe function-based execution.
-
----
-
-## 🎯 TL;DR
-- Speak natural drone commands like “rise 3 meters” or “land now.”
-- LLM interprets them and triggers backend functions (`takeoff()`, `land()`, `move_drone(...)`) with zero ambiguous parsing.
-- Built-in filters handle silence, noise, and unexpected inputs.
-- All audio and LLM logic runs locally — no API keys required.
+**Voice-controlled drone interface using local LLMs and Parrot Olympe SDK**
 
 ---
 
-## 🧠 Why few-shot “shots”?
+## 🚀 Quickstart
 
-Few-shot examples (**shots**) teach the LLM exactly how we want it to behave:
-- ✅ Show correct behavior (e.g., "rise" → `move_drone(dz: -1)`)
-- 🚫 Show no‑ops for greetings like "hello" or noise like "banana"
-- 🧭 Establish edge cases and coordinate conventions clearly
+### 1. Clone the repo
 
-This dramatically reduces hallucinations and makes the model more predictable without finetuning.
+```bash
+git clone https://github.com/Trigo93/hey_parrot.git
+cd hey_parrot
+```
 
----
+### 2. Install dependencies
 
-## ✏️ Why the prompt is structured like this
+Install Python packages (ideally in a virtual environment):
 
-Our prompt combines:
-- A precise **system message** detailing tools and coordinate systems
-- Eye-catching **emojis** (`⬆️`, `⬇️`) for visual anchors
-- Few‑shot examples demonstrating desired behavior
-- Strong language: “Only call a function if… confident” to enforce caution
+```bash
+pip install -r models/requirements_ollama.txt
+```
 
-Together, this setup ensures the LLM outputs **only valid tool calls**, reducing unwanted behavior.
+Make sure `ollama` is installed and running:  
+https://ollama.com/download
 
----
+```bash
+ollama run mistral
+```
 
-## 🔌 Function scheme → Why it matters
+(Optional but recommended):
+```bash
+ollama pull llama3:8b
+# Or for higher performance (if your GPU can handle it):
+# ollama pull llama3:70b
+```
 
-Instead of parsing LLM text output, we use **Ollama function-calling** to:
-1. **Define allowed actions** (`takeoff()`, `land()`, `move_drone(dx,dy,dz,dpsi)`)
-2. Constrain model output to **calling these functions only**
-3. Eliminate parsing bugs, format inconsistencies, or hallucinated commands
+### 3. Install `vosk` model (speech-to-text)
 
-This makes your system both **safe** and **structured**.
+Download the English model manually:  
+[https://alphacephei.com/vosk/models](https://alphacephei.com/vosk/models)
 
----
+Recommended: `vosk-model-small-en-us-0.15` (50MB)
 
-## 📴 Olympe log remover
+```bash
+wget https://alphacephei.com/vosk/models/vosk-model-small-en-us-0.15.zip
+unzip vosk-model-small-en-us-0.15.zip -d models/vosk
+```
 
-Olympe logs can be overwhelming and clutter your console. The repo includes a helper to:
-- Mute **info/debug logs**
-- ⚠️ Keep **only actual errors** visible
-- Make runtime output clean, focused, and developer-friendly
+Your folder should look like: `models/vosk/vosk-model-small-en-us-0.15`
 
----
+### 4. Launch the system
 
-## 🗣️ Vosk voice setup (local & offline)
-
-We use **Vosk** for offline speech recognition. To install and use the model:
-
-1. Download a model (e.g., small English):
-   ```bash
-   wget https://alphacephei.com/vosk/models/vosk-model-small-en-us-0.15.zip
-   unzip vosk-model-small-en-us-0.15.zip -d models/vosk
-   ```
-2. Install dependencies:
-   ```bash
-   pip install vosk sounddevice
-   ```
-3. Modify `voice_input.py` to point to your model:
-   ```python
-   model = vosk.Model("models/vosk/vosk-model-small-en-us-0.15")
-   ```
-
-We can’t include the large Vosk model in the repo — but with these steps anyone can run locally and offline.
+```bash
+python main.py
+```
 
 ---
 
-## 🧩 Key components
+## 🎤 Voice control loop
 
-- `main.py` – Main loop: listens, interprets, and executes functions
-- `llm_wrapper.py` – Starts Ollama, injects prompt + shots, handles function output
-- `drone_tools.py` – Defines `takeoff()`, `land()`, `move_drone(...)` paired with Olympe
-- `voice_input.py` – Handles Vosk audio streaming with silence guards
-- `load_*` – Helpers for loading prompt templates & shots JSON
+The interface listens to your voice and sends commands to the drone using:
 
----
+- `takeoff()`
+- `land()`
+- `move_drone(dx, dy, dz, dpsi)`
 
-## ⚙️ Installation & Quick Start
+Examples of natural commands:
 
-1. Clone the repo
-   ```bash
-   git clone https://github.com/Trigo93/hey_parrot.git
-   cd hey_parrot
-   ```
-
-2. Set up Python env
-   ```bash
-   python3 -m venv venv
-   source venv/bin/activate
-   pip install -r requirements.txt
-   ```
-
-3. Install Ollama & pull a model
-   ```bash
-   ollama pull llama3:8b
-   ```
-
-4. Download and unpack Vosk model (see above).
-
-5. Run the app!
-   ```bash
-   python main.py
-   ```
+- "take off"
+- "go up 2 meters"
+- "turn left and move forward 3 meters"
+- "land"
 
 ---
 
-## 🗺️ Next steps & customization
+## 🧠 LLM tool usage
 
-- Extend `drone_tools.py` with more functions (e.g., `hover()`, `flip()`)
-- Add extra few-shot examples for new commands in `shots.json`
-- Tweak LLM model: `llama3:8b` → `llama3:70b`, `mixtral` for more accuracy
-- Fine-tune hotword detection or speech timeout behavior
+We use `ollama.chat()` with `tools` (function calling) to ensure structured, safe outputs.
 
----
+The LLM never replies with free-form text. It only returns a valid function call (or nothing) based on:
 
-## 📣 Contributing
-
-Feel free to open issues, suggest new voice commands, or test on different drone models!
+- A strong system prompt (`models/prompt.txt`)
+- Few-shot examples loaded from `models/shots.json`
 
 ---
 
-## 🧪 License
+## 🔇 Suppress noisy Olympe logs
 
-MIT License — feel free to reuse, adapt, and build upon!
+The script removes most `Olympe` debug logs by setting:
+
+```python
+logging.getLogger("olympe").setLevel(logging.ERROR)
+```
+
+This keeps the console clean and focused on useful outputs.
 
 ---
 
-**Fly high, fly safe — Hey Parrot at your command.**
+## 📁 Project structure
+
+```txt
+.
+├── main.py                  # Main loop: speech → LLM → drone
+├── utils/
+│   ├── drone_control.py     # Functions mapped to LLM tool calls
+│   ├── load_txt.py          # Prompt + few-shot loader
+│   └── vosk_listener.py     # Speech-to-text (Vosk)
+├── models/
+│   ├── prompt.txt           # System prompt for LLM
+│   ├── shots.json           # Few-shot examples
+│   └── requirements_ollama.txt
+├── doc/
+│   └── archi.txt            # Architecture overview (flowchart-style)
+```
+
+---
+
+## 📦 Dependencies
+
+- [Parrot Olympe SDK](https://developer.parrot.com/docs/olympe/)
+- `ollama` (local LLM runner)
+- `vosk` (offline speech recognition)
+- Python 3.10+
+
+---
+
+## 🤖 Why not parsing? Why LLMs?
+
+See the full write-up in [`medium_article.md`](medium_article.md)
