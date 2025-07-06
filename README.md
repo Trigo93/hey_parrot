@@ -21,13 +21,6 @@ Install Python packages (ideally in a virtual environment):
 pip3 install ollama vosk sounddevice
 ```
 
-(Optional but recommended):
-```bash
-ollama pull llama3:8b
-# Or for higher performance (if your GPU can handle it):
-# ollama pull llama3:70b
-```
-
 ### 3. Install `vosk` model (speech-to-text)
 
 
