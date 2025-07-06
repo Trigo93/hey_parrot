@@ -18,14 +18,7 @@ cd hey_parrot
 Install Python packages (ideally in a virtual environment):
 
 ```bash
-pip install -r models/requirements_ollama.txt
-```
-
-Make sure `ollama` is installed and running:  
-https://ollama.com/download
-
-```bash
-ollama run mistral
+pip3 install ollama vosk sounddevice
 ```
 
 (Optional but recommended):
@@ -37,22 +30,18 @@ ollama pull llama3:8b
 
 ### 3. Install `vosk` model (speech-to-text)
 
-Download the English model manually:  
-[https://alphacephei.com/vosk/models](https://alphacephei.com/vosk/models)
-
-Recommended: `vosk-model-small-en-us-0.15` (50MB)
 
 ```bash
 wget https://alphacephei.com/vosk/models/vosk-model-small-en-us-0.15.zip
-unzip vosk-model-small-en-us-0.15.zip -d models/vosk
+unzip vosk-model-small-en-us-0.15.zip -d models/
 ```
 
-Your folder should look like: `models/vosk/vosk-model-small-en-us-0.15`
+Your folder should look like: `models/vosk-model-small-en-us-0.15`
 
 ### 4. Launch the system
 
 ```bash
-python main.py
+python3 main.py
 ```
 
 ---
@@ -87,11 +76,7 @@ The LLM never replies with free-form text. It only returns a valid function call
 
 ## 🔇 Suppress noisy Olympe logs
 
-The script removes most `Olympe` debug logs by setting:
-
-```python
-logging.getLogger("olympe").setLevel(logging.ERROR)
-```
+The script removes most `Olympe` debug logs that can be intrusive.
 
 This keeps the console clean and focused on useful outputs.
 
@@ -101,30 +86,26 @@ This keeps the console clean and focused on useful outputs.
 
 ```txt
 .
-├── main.py                  # Main loop: speech → LLM → drone
+├── main.py                            # Main loop: speech → LLM → drone
+├── llm.py                             # LLM model and query
 ├── utils/
-│   ├── drone_control.py     # Functions mapped to LLM tool calls
-│   ├── load_txt.py          # Prompt + few-shot loader
-│   └── vosk_listener.py     # Speech-to-text (Vosk)
+│   ├── drone_control.py               # Functions mapped to LLM tool calls
+│   ├── load_txt.py                    # Prompt + few-shot loader
+│   ├── voice_input.py                 # Speech-to-text (Vosk)
+│   └── olympe_log_remover.py          # Olympe helper to hide noise logging
 ├── models/
-│   ├── prompt.txt           # System prompt for LLM
-│   ├── shots.json           # Few-shot examples
-│   └── requirements_ollama.txt
-├── doc/
-│   └── archi.txt            # Architecture overview (flowchart-style)
+│   ├── prompt.txt                     # System prompt for LLM
+│   ├── shots.json                     # Few-shot examples
+│   └── vosk-model-small-en-us-0.15    # Vosk model
 ```
 
 ---
 
 ## 📦 Dependencies
 
-- [Parrot Olympe SDK](https://developer.parrot.com/docs/olympe/)
+- [Parrot Olympe SDK](https://developer.parrot.com/docs/olympe/index.html)
 - `ollama` (local LLM runner)
 - `vosk` (offline speech recognition)
 - Python 3.10+
 
 ---
-
-## 🤖 Why not parsing? Why LLMs?
-
-See the full write-up in [`medium_article.md`](medium_article.md)
