@@ -27,6 +27,7 @@ pip3 install ollama vosk sounddevice
 ```bash
 wget https://alphacephei.com/vosk/models/vosk-model-small-en-us-0.15.zip
 unzip vosk-model-small-en-us-0.15.zip -d models/
+rm vosk-model-small-en-us-0.15.zip
 ```
 
 Your folder should look like: `models/vosk-model-small-en-us-0.15`
