@@ -1,0 +1,55 @@
+[
+  {"role": "user", "content": "go up"},
+  {"role": "assistant", "tool_calls": [{"type": "function", "function": {"name": "move_drone", "arguments": {"dx": 0, "dy": 0, "dz": -1, "dpsi": 0}}}]},
+
+  {"role": "user", "content": "go down"},
+  {"role": "assistant", "tool_calls": [{"type": "function", "function": {"name": "move_drone", "arguments": {"dx": 0, "dy": 0, "dz": 1, "dpsi": 0}}}]},
+
+  {"role": "user", "content": "please take off"},
+  {"role": "assistant", "tool_calls": [{"type": "function", "function": {"name": "takeoff", "arguments": {}}}]},
+
+  {"role": "user", "content": "takeoff"},
+  {"role": "assistant", "tool_calls": [{"type": "function", "function": {"name": "takeoff", "arguments": {}}}]},
+
+  {"role": "user", "content": "land now"},
+  {"role": "assistant", "tool_calls": [{"type": "function", "function": {"name": "land", "arguments": {}}}]},
+
+  {"role": "user", "content": "land"},
+  {"role": "assistant", "tool_calls": [{"type": "function", "function": {"name": "land", "arguments": {}}}]},
+
+  {"role": "user", "content": "touch the ground"},
+  {"role": "assistant", "tool_calls": [{"type": "function", "function": {"name": "land", "arguments": {}}}]},
+
+  {"role": "user", "content": "go up 3 meters"},
+  {"role": "assistant", "tool_calls": [{"type": "function", "function": {"name": "move_drone", "arguments": {"dx": 0, "dy": 0, "dz": -3, "dpsi": 0}}}]},
+
+  {"role": "user", "content": "rise"},
+  {"role": "assistant", "tool_calls": [{"type": "function", "function": {"name": "move_drone", "arguments": {"dx": 0, "dy": 0, "dz": -3, "dpsi": 0}}}]},
+
+  {"role": "user", "content": "go down 2 meters"},
+  {"role": "assistant", "tool_calls": [{"type": "function", "function": {"name": "move_drone", "arguments": {"dx": 0, "dy": 0, "dz": 2, "dpsi": 0}}}]},
+
+  {"role": "user", "content": "turn left"},
+  {"role": "assistant", "tool_calls": [{"type": "function", "function": {"name": "move_drone", "arguments": {"dx": 0, "dy": 0, "dz": 0, "dpsi": 0.5}}}]},
+
+  {"role": "user", "content": "rotate 90 degrees clockwise"},
+  {"role": "assistant", "tool_calls": [{"type": "function", "function": {"name": "move_drone", "arguments": {"dx": 0, "dy": 0, "dz": 0, "dpsi": -1.5707963268}}}]},
+
+  {"role": "user", "content": "go forward 2 meters and turn right"},
+  {"role": "assistant", "tool_calls": [{"type": "function", "function": {"name": "move_drone", "arguments": {"dx": 2, "dy": 0, "dz": 0, "dpsi": -0.5}}}]},
+
+  {"role": "user", "content": "move to the right"},
+  {"role": "assistant", "tool_calls": [{"type": "function", "function": {"name": "move_drone", "arguments": {"dx": 0, "dy": 1, "dz": 0, "dpsi": 0}}}]},
+
+  {"role": "user", "content": "hello"},
+  {"role": "assistant", "content": ""},
+
+  {"role": "user", "content": "how are you?"},
+  {"role": "assistant", "content": ""},
+
+  {"role": "user", "content": "wait a bit"},
+  {"role": "assistant", "content": ""},
+
+  {"role": "user", "content": "move"},
+  {"role": "assistant", "content": ""}
+]
