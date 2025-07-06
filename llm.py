@@ -1,6 +1,6 @@
 import ollama
 from utils.load_txt import load_prompt, load_shots
-from utils.drone_control import get_tools
+from utils.drone_control import move_drone, takeoff, land
 
 def run_llm(user_text):
     system_prompt = load_prompt("models/prompt.txt")
@@ -12,16 +12,21 @@ def run_llm(user_text):
     response = ollama.chat(
         model="mistral",
         messages=messages,
-        tools=get_tools(),
+        tools=[move_drone, takeoff, land],
     )
 
     if response.message.tool_calls:
         for tool_call in response.message.tool_calls:
             name = tool_call.function.name
             args = tool_call.function.arguments or {}
-            print(f"🔧 Tool call: {name}({args})")
+            if name == "takeoff":
+                takeoff()
+            elif name == "land":
+                land()
+            elif name == "move_drone":
+                move_drone(**args)
     else:
-        print("🤷 No valid command detected.")
+        print("No valid command detected.")
 
 if __name__ == "__main__":
     # Tests
