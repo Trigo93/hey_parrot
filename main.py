@@ -1,5 +1,5 @@
+from llm import run_llm
 from utils.voice_input import record_and_transcribe
-from utils.llm import run_llm
 from utils.olympe_log_remover import suppress_olympe_logs
 from utils import drone_control
 
